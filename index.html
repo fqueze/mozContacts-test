@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script type="text/javascript">
+function dump(aString)
+{
+  document.getElementById("content").innerHTML += "<br>" + aString;
+}
+
+function addContact()
+{
+  addMozContact(document.getElementById("contactName").value,
+                document.getElementById("contactEmail").value,
+                document.getElementById("contactTel").value);
+}
+
+function findContacts()
+{
+  findMozContacts(document.getElementById('contactSearch').value);
+}
+  </script>
+  <script type="text/javascript" src="testMozContacts.js"></script>
+  <title>mozContacts test</title>
+</head>
+<body id="body" onload="listMozContacts();">
+
+<h2>Pre-requisites</h2>
+<p>Before testing this demo on a current Firefox nightly:</p>
+<ul>
+<li>Set <code>dom.mozContacts.enabled</code> to true in <code>about:config</code>.</li>
+<li>execute this code once in the Error Console (assuming the demo is on localhost):
+<pre>
+Components.utils.import("resource://gre/modules/Services.jsm");
+function addPermission(aPerm) {
+  Services.perms.add(Services.io.newURI("http://localhost/", null, null),
+                     aPerm, Components.interfaces.nsIPermissionManager.ALLOW_ACTION);
+}
+addPermission("contacts-read");
+addPermission("contacts-write");
+addPermission("contacts-create");
+</pre></li>
+<li><strong>After each Firefox restart</strong>, you need to execute this in the Error Console for mozContacts to work.
+<pre>
+Components.utils.import('resource://gre/modules/PermissionPromptHelper.jsm');
+Components.utils.import('resource://gre/modules/ContactService.jsm');
+</pre>
+</li>
+</ul>
+
+<h2>Log</h2>
+<div id="content" style="height: 5em; overflow: auto;"></div>
+
+<h2>Add a contact</h2>
+<form onsubmit="addContact()">
+<label for="contactName">Name </label><input type="text" id="contactName"/><br>
+<label for="contactEmail">Email </label><input type="text" id="contactEmail"/><br>
+<label for="contactTel">Tel </label><input type="text" id="contactTel"/><br>
+<input type="submit" value="Add"/>
+</form>
+<h2>Existing contacts</h2>
+<table id="allContacts" border="1"><tr><th>Name</th><th>email</th><th>tel</th></tr>
+</table>
+<h2>Find contacts</h2>
+<label for="contactSearch">Search </label><input type="text" oninput="findContacts()" id="contactSearch"/><br>
+<table id="findContacts" border="1"><tr><th>Name</th><th>email</th><th>tel</th></tr>
+</table>
+</body>
+</html>
