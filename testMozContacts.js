@@ -46,7 +46,7 @@ function listMozContacts()
 {
   try {
     var mc = window.navigator.mozContacts;
-    req = mc.find({});
+    var req = mc.find({});
     req.onsuccess = function () {
       document.getElementById("contactCount").textContent =
         "Found " + req.result.length + " contacts.";
@@ -77,12 +77,13 @@ function findMozContacts(aSearchString)
       filterValue: aSearchString
     };
     var mc = window.navigator.mozContacts;
-    req = mc.find(searchOptions);
-    req.onsuccess = function () {
+    var req = mc.find(searchOptions);
+    req.onsuccess = function (event) {
+      var result = event.target.result;
       document.getElementById("contactFoundCount").textContent =
-        "Found " + req.result.length + " contacts.";
-      for (var i = 0; i < req.result.length; ++i) {
-        var c = req.result[i];
+        "Found " + result.length + " contacts.";
+      for (var i = 0; i < result.length; ++i) {
+        var c = result[i];
         var tr = document.createElement("tr");
         tr.innerHTML = "<td>" + c.name + "</td><td>" + joinValues(c.email) + "</td><td>" + joinValues(c.tel) + "</td>";
         document.getElementById("findContacts").appendChild(tr);
