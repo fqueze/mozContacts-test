@@ -48,7 +48,8 @@ function listMozContacts()
     var mc = window.navigator.mozContacts;
     req = mc.find({});
     req.onsuccess = function () {
-      dump("Found " + req.result.length + " contacts.");
+      document.getElementById("contactCount").textContent =
+        "Found " + req.result.length + " contacts.";
       for (var i = 0; i < req.result.length; ++i) {
         var c = req.result[i];
         var tr = document.createElement("tr");
@@ -78,7 +79,8 @@ function findMozContacts(aSearchString)
     var mc = window.navigator.mozContacts;
     req = mc.find(searchOptions);
     req.onsuccess = function () {
-      dump("Found " + req.result.length + " contacts.");
+      document.getElementById("contactFoundCount").textContent =
+        "Found " + req.result.length + " contacts.";
       for (var i = 0; i < req.result.length; ++i) {
         var c = req.result[i];
         var tr = document.createElement("tr");

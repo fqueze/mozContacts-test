@@ -59,9 +59,11 @@ Components.utils.import('resource://gre/modules/ContactService.jsm');
 <input type="submit" value="Add"/>
 </form>
 <h2>Existing contacts</h2>
+<p id="contactCount"></p>
 <table id="allContacts" border="1"><tr><th>Name</th><th>email</th><th>tel</th></tr>
 </table>
 <h2>Find contacts</h2>
+<p id="contactFoundCount"></p>
 <label for="contactSearch">Search </label><input type="text" oninput="findContacts()" id="contactSearch"/><br>
 <table id="findContacts" border="1"><tr><th>Name</th><th>email</th><th>tel</th></tr>
 </table>
