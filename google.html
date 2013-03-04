@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script>
+      function initAuth() {
+        gapi.auth.init(function() {
+          document.getElementById("authButton").removeAttribute("disabled");
+        });
+      }
+
+      var token;
+      function auth() {
+        var config = {
+          'client_id': '583962873515.apps.googleusercontent.com',
+          'scope': 'https://www.google.com/m8/feeds'
+        };
+        gapi.auth.authorize(config, function() {
+//          console.log('login complete: ' + JSON.stringify(gapi.auth.getToken()));
+          token = gapi.auth.getToken().access_token;
+
+          var request = new XMLHttpRequest();
+          request.onload = onContactsLoad;
+          var url = "https://www.google.com/m8/feeds/contacts/default/full" +
+            "?v=3.0&alt=json&access_token=" + encodeURIComponent(token);
+          request.open("GET", url, true);
+          request.send();
+        });
+      }
+
+      function joinEmails(aEmails) {
+        return (aEmails || []).map(function(e) { return e.address }).join(", ");
+      }
+
+      function joinPhones(aEmails) {
+        return (aEmails || []).map(function(e) { return e.$t }).join(", ");
+      }
+
+      function onContactsLoad() {
+//        console.log("xhr data = " + this.responseText);
+        var data = JSON.parse(this.responseText);
+        var entries = data.feed.entry || [];
+        document.getElementById("contactCount").textContent = "Fetched " + entries.length + " contacts from " + data.feed.id.$t + ".";
+        entries.forEach(function(e) {
+          var tr = document.createElement("tr");
+          var name = e.gd$name ? e.gd$name.gd$fullName.$t : "";
+          tr.innerHTML = "<td>" + name + "</td><td>" + joinEmails(e.gd$email) + "</td><td>" + joinPhones(e.gd$phoneNumber) + "</td>";
+          document.getElementById("googleContacts").appendChild(tr);
+        });
+      }
+    </script>
+  </head>
+
+  <body onload="initAuth();">
+
+    <h2>Google contacts</h2>
+    <button id="authButton" disabled="true" onclick="auth();">Load</button>
+    <p id="contactCount"></p>
+    <table id="googleContacts" border="1"><tr><th>Name</th><th>email</th><th>tel</th></tr>
+    </table>
+  </body>
+</html>
